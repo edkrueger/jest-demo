@@ -2,14 +2,6 @@ const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
 
-const FOLDER = 'data'
-const FILENAME = 'notes.json'
-const FILEPATH = path.join(FOLDER, FILENAME)
-
-console.log(FILEPATH)
-
-fs.mkdirSync(FOLDER, {recursive: true})
-
 const logNote = (action, title, body) => {
 	console.log(chalk.green(
 		[	
@@ -20,28 +12,28 @@ const logNote = (action, title, body) => {
 	))
 }
 
-const saveNotes = notesArray => {
-	fs.writeFileSync(FILEPATH, JSON.stringify(notesArray))
+const saveNotes = (notesArray, pathArgs) => {
+	fs.writeFileSync(pathArgs.filepath, JSON.stringify(notesArray))
 }
 
 const findNoteByTitle = (notesArray, title) => notesArray.find(e => e.title === title)
 
-const loadNotes = () => {
+const loadNotes = (pathArgs) => {
 	try{
-		return JSON.parse(fs.readFileSync(FILEPATH))
+		return JSON.parse(fs.readFileSync(pathArgs.filepath))
 	} catch(e){
 		return []
 	}
 }
 
-const addNote = (title, body) => {
+const addNote = (title, body, pathArgs) => {
 
-	notesArray = loadNotes()
+	notesArray = loadNotes(pathArgs)
 	notesDuplicate = findNoteByTitle(notesArray, title)
 
 	if (!notesDuplicate){
 		notesArray.push({'title': title, 'body': body})
-		saveNotes(notesArray)
+		saveNotes(notesArray, pathArgs)
 		logNote('added', title, body)
 	} else {
 		console.log(chalk.red('This note has a duplicate title! Please try again with another title.'))
@@ -49,25 +41,25 @@ const addNote = (title, body) => {
 
 }
 
-const removeNote = title => {
+const removeNote = (title, pathArgs) => {
 
-	notesArray =  loadNotes()
+	notesArray =  loadNotes(pathArgs)
 	titles = notesArray.map(e => e.title)
 
 	if (titles.includes(title)){
 		note = findNoteByTitle(notesArray, title)
 		notesToKeep = notesArray.filter(e => e.title != title)
-		saveNotes(notesToKeep)
+		saveNotes(notesToKeep, pathArgs)
 		logNote('deleted', note.title, note.body)
 	} else {
 		console.log(chalk.red('No note with a matching title found! Please try again with another title.'))
 	}
 }
 
-const listNotes = () => {loadNotes().map(note => {console.log(chalk.inverse(note.title))})}
+const listNotes = (pathArgs) => {loadNotes(pathArgs).map(note => {console.log(chalk.inverse(note.title))})}
 
-const readNote = (title) => {
-	notesArray = loadNotes()
+const readNote = (title, pathArgs) => {
+	notesArray = loadNotes(pathArgs)
 	note = findNoteByTitle(notesArray, title)
 	if (note){
 		console.log(chalk.inverse(note.title))
