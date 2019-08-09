@@ -1,5 +1,5 @@
 const fs = require('fs')
-const FILEPATH = 'notes.json'
+const FILEPATH = 'data/notes.json'
 const chalk = require('chalk')
 
 const logNote = (action, title, body) => {
@@ -20,7 +20,7 @@ const findNoteByTitle = (notesArray, title) => notesArray.find(e => e.title === 
 
 const loadNotes = () => {
 	try{
-		return JSON.parse(fs.readFileSync('notes.json'))
+		return JSON.parse(fs.readFileSync(FILEPATH))
 	} catch(e){
 		return []
 	}
