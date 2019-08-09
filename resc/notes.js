@@ -1,6 +1,14 @@
 const fs = require('fs')
-const FILEPATH = 'data/notes.json'
+const path = require('path')
 const chalk = require('chalk')
+
+const FOLDER = 'data'
+const FILENAME = 'notes.json'
+const FILEPATH = path.join(FOLDER, FILENAME)
+
+console.log(FILEPATH)
+
+fs.mkdirSync(FOLDER, {recursive: true})
 
 const logNote = (action, title, body) => {
 	console.log(chalk.green(
